@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Recipe</string>
+    <string name="main_activity_recipe_type">Recipe Types</string>
+    <string name="add_recipe_activity">Add Recipe</string>
+    <string name="add_recipe_ingredients">Ingredients</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="hint_enter_recipe_name">Enter recipe name</string>
+    <string name="recipe_photo">Recipe Photo</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="steps">Steps</string>
+</resources>
