@@ -1,9 +1,11 @@
 package com.example.recipe.Adapter
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.recipe.Database.DatabaseHandler
 import com.example.recipe.Item.Recipe
 import com.example.recipe.R
 import com.example.recipe.Util.ImageUtil
@@ -11,6 +13,8 @@ import kotlinx.android.synthetic.main.item_main.view.*
 
 class MainRvAdapter(private val aryRecipe: ArrayList<Recipe>) :
     RecyclerView.Adapter<MainRvAdapter.MainRvViewHolder>() {
+
+    var dbHandler: DatabaseHandler? = null
     fun updateRecipe(alRecipe: ArrayList<Recipe>) {
         aryRecipe.clear()
         var x = 0
@@ -31,6 +35,24 @@ class MainRvAdapter(private val aryRecipe: ArrayList<Recipe>) :
 
     override fun onBindViewHolder(holder: MainRvViewHolder, position: Int) {
         holder.bindItems(aryRecipe[position])
+        holder.itemView.rl_item_main.setOnLongClickListener{
+            val picDialog = AlertDialog.Builder(holder.itemView.context)
+            picDialog.setTitle("Delete?")
+            val picDialogItems = arrayOf("No", "Yes")
+            picDialog.setItems(picDialogItems) { dialog, which ->
+                when (which) {
+                    0 -> return@setItems
+                    1 ->{
+                        dbHandler = DatabaseHandler(holder.itemView.context)
+                        dbHandler!!.deleteTask(aryRecipe[position].id)
+                        aryRecipe.removeAt(position)
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+            picDialog.show()
+            return@setOnLongClickListener true
+        }
     }
 
     override fun getItemCount(): Int {

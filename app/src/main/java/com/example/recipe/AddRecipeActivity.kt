@@ -3,9 +3,6 @@ package com.example.recipe
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -13,10 +10,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.Adapter.IngredientsRvAdapter
@@ -45,7 +41,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private lateinit var rvIngredients: RecyclerView
     private lateinit var rvSteps: RecyclerView
-
+    private var bPic:Boolean = false
     var dbRecipeHandler: DatabaseHandler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +83,7 @@ class AddRecipeActivity : AppCompatActivity() {
         if (sRName.isNotEmpty()) {
             recipe.sRecipeName = sRName
         }
-        if (ivCam.drawable != null) {
+        if (bPic) {
             val bitmap = (ivCam.getDrawable() as BitmapDrawable).bitmap
             val bImage = ImageUtil().convertBitmapToString(bitmap)
             if (bImage != null) {
@@ -117,32 +113,11 @@ class AddRecipeActivity : AppCompatActivity() {
             j++
         }
         success = dbRecipeHandler!!.addTask(recipe)
-        val CHANNEL_ID = "WARNING"
+
         if (success) {
             finish()
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = getString(R.string.warning)
-                val descriptionText = getString(R.string.failed)
-                val importance = NotificationManager.IMPORTANCE_DEFAULT
-                val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                    description = descriptionText
-                }
-
-                val notificationManager: NotificationManager =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
-            } else {
-                val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_warning)
-                    .setContentTitle(getString(R.string.warning))
-                    .setContentText(getString(R.string.failed))
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-                with(NotificationManagerCompat.from(this)) {
-                    notify(0, builder.build())
-                }
-            }
+           Log.e("Failed","FFFFF")
         }
     }
 
@@ -230,6 +205,7 @@ class AddRecipeActivity : AppCompatActivity() {
                         val bitmap =
                             MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
                         iv_add_recipe!!.setImageBitmap(bitmap)
+                        bPic=true
                     } catch (e: IOException) {
                         e.printStackTrace()
                         Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
@@ -239,6 +215,7 @@ class AddRecipeActivity : AppCompatActivity() {
             if (requestCode == CAMERA_PICK_CODE) {
                 val thumbnail = data!!.extras!!.get("data") as Bitmap
                 iv_add_recipe.setImageBitmap(thumbnail)
+                bPic=true
             }
         }
     }
