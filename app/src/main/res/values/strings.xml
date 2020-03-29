@@ -9,4 +9,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="steps">Steps</string>
+    <string name="warning">Warning</string>
+    <string name="failed">Failed</string>
 </resources>

@@ -11,9 +11,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
 import kotlinx.android.synthetic.main.field.view.*
 
-class StepsRvAdapter(private val aryLstSteps: ArrayList<String>):RecyclerView.Adapter<StepsRvAdapter.StepsViewHolder>() {
+class StepsRvAdapter(private val aryLstSteps: ArrayList<String>) :
+    RecyclerView.Adapter<StepsRvAdapter.StepsViewHolder>() {
     private lateinit var context: Context
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):StepsViewHolder {
+
+    init {
+        if (aryLstSteps.size == 0) {
+            aryLstSteps.add("")
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StepsViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.field,
             parent, false
@@ -22,7 +30,7 @@ class StepsRvAdapter(private val aryLstSteps: ArrayList<String>):RecyclerView.Ad
         return StepsViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder:StepsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: StepsViewHolder, position: Int) {
         val currentItem = aryLstSteps[position]
         val sPosition = (position + 1).toString()
         holder.tvNumber.setText(sPosition)
@@ -31,13 +39,13 @@ class StepsRvAdapter(private val aryLstSteps: ArrayList<String>):RecyclerView.Ad
         if (currentItem.isNotEmpty()) {
             holder.ivSymbol.setImageResource(R.drawable.ic_delete)
             bDelete = true
-        }else{
+        } else {
             holder.ivSymbol.setImageResource(R.drawable.ic_add_recipe)
         }
         holder.ivSymbol.setOnClickListener {
-            if(bDelete){
+            if (bDelete) {
                 aryLstSteps.removeAt(position)
-            }else{
+            } else {
                 if (holder.etField.text.isNotEmpty()) {
                     val sField = holder.etField.text
                     aryLstSteps[position] = sField.toString()
@@ -51,6 +59,7 @@ class StepsRvAdapter(private val aryLstSteps: ArrayList<String>):RecyclerView.Ad
     override fun getItemCount(): Int {
         return aryLstSteps.size
     }
+
     class StepsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvNumber: TextView = itemView.tv_number
         val etField: EditText = itemView.et_field

@@ -12,10 +12,15 @@ import com.example.recipe.R
 import kotlinx.android.synthetic.main.field.view.*
 
 class IngredientsRvAdapter(
-    private val aryLstIngredients: ArrayList<String>
+    private val alIngredients: ArrayList<String>
 ) :
     RecyclerView.Adapter<IngredientsRvAdapter.IngredientViewHolder>() {
     private lateinit var context: Context
+    init {
+        if(alIngredients.size==0){
+            alIngredients.add("")
+        }
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.field,
@@ -26,7 +31,7 @@ class IngredientsRvAdapter(
     }
 
     override fun onBindViewHolder(holder: IngredientViewHolder, position: Int) {
-        val currentItem = aryLstIngredients[position]
+        val currentItem = alIngredients[position]
         val sPosition = (position + 1).toString()
         holder.tvNumber.setText(sPosition)
         holder.etField.setText(currentItem)
@@ -39,12 +44,12 @@ class IngredientsRvAdapter(
         }
         holder.ivSymbol.setOnClickListener {
             if(bDelete){
-                aryLstIngredients.removeAt(position)
+                alIngredients.removeAt(position)
             }else{
                 if (holder.etField.text.isNotEmpty()) {
                     val sField = holder.etField.text
-                    aryLstIngredients[position] = sField.toString()
-                    aryLstIngredients.add("")
+                    alIngredients[position] = sField.toString()
+                    alIngredients.add("")
                 }
             }
             notifyDataSetChanged()
@@ -52,7 +57,7 @@ class IngredientsRvAdapter(
     }
 
     override fun getItemCount(): Int {
-        return aryLstIngredients.size
+        return alIngredients.size
     }
 
     class IngredientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
